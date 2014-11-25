@@ -8,7 +8,6 @@ var ready = function() {
   var main = function () {
     if(Map.fight()){
       Map.fightScene().render()
-      Interface.movePointer()
     } else {
       var now = Date.now();
       var delta = now - then;
@@ -19,7 +18,6 @@ var ready = function() {
       then = now;
     }
     
-
     // Request to do this again ASAP
     requestAnimationFrame(main);
   };

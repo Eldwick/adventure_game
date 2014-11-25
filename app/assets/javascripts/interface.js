@@ -3,21 +3,20 @@ var Interface = function (modifier) {
       keysDown = {};
 
   addEventListener("keydown", function (e) {
-    if(!(e.keyCode == 13)){
+    if(Map.fight()){ // In turn based fight mode
+      if (e.keyCode  == 13) { // Player pressed enter
+        Map.fightScene().select()
+      }
+      if (e.keyCode  == 38) { // Player pressed up
+        Map.fightScene().pointerUp()
+      }
+      if (e.keyCode  == 40) { // Player pressed down
+        Map.fightScene().pointerDown()
+      }
+    } else {
       keysDown[e.keyCode] = true;
     }
   }, false);
-
-  addEventListener("keydown", function (e) {
-    if((e.keyCode == 13)){
-      if(!Map.fightScene().isOpen()){
-        Map.fightScene().select()
-      } else {
-        Map.fightScene().attack()
-        Map.fightScene().select()
-      }
-    }
-  }, true);
 
   addEventListener("keyup", function (e) {
     delete keysDown[e.keyCode];
@@ -25,33 +24,33 @@ var Interface = function (modifier) {
 
   return {
     moveHero: function(modifier) {
-      if (38 in keysDown && Hero.y() >= 32) { // Player holding up
-        coordinate = Hero.y() - (Hero.speed() * modifier);
-        Hero.setY(coordinate);
+      if (38 in keysDown && Map.hero().y >= 32) { // Player holding up
+        coordinate = Map.hero().y - (Map.hero().speed * modifier);
+        Map.hero().setY(coordinate);
       }
-      if (40 in keysDown && Map.canvas().height-64 > Hero.y()) { // Player holding down
-        coordinate = Hero.y() + (Hero.speed() * modifier);
-        Hero.setY(coordinate); 
+      if (40 in keysDown && Map.canvas().height-64 > Map.hero().y) { // Player holding down
+        coordinate = Map.hero().y + (Map.hero().speed * modifier);
+        Map.hero().setY(coordinate); 
       }
-      if (37 in keysDown && Hero.x() >= 32) { // Player holding left
-        coordinate = Hero.x() - (Hero.speed() * modifier);
-        Hero.setX(coordinate); 
+      if (37 in keysDown && Map.hero().x >= 32) { // Player holding left
+        coordinate = Map.hero().x - (Map.hero().speed * modifier);
+        Map.hero().setX(coordinate); 
       }
-      if (39 in keysDown && Map.canvas().width-64 > Hero.x()) { // Player holding right
-        coordinate = Hero.x() + (Hero.speed() * modifier);
-        Hero.setX(coordinate); 
+      if (39 in keysDown && Map.canvas().width-64 > Map.hero().x) { // Player holding right
+        coordinate = Map.hero().x + (Map.hero().speed * modifier);
+        Map.hero().setX(coordinate); 
       }
     },
     checkCaught: function() {
       for(i in Map.enemies()){
         if (
-          Hero.x() <= (Map.enemies()[i].x() + 32)
-          && Map.enemies()[i].x() <= (Hero.x() + 32)
-          && Hero.y() <= (Map.enemies()[i].y() + 32)
-          && Map.enemies()[i].y() <= (Hero.y() + 32)
+          Map.hero().x <= (Map.enemies()[i].x() + 32)
+          && Map.enemies()[i].x() <= (Map.hero().x + 32)
+          && Map.hero().y <= (Map.enemies()[i].y() + 32)
+          && Map.enemies()[i].y() <= (Map.hero().y + 32)
         ) {
           Map.setFight(true)
-          Map.setFightScene(new FightScene(Hero, Map.enemies()[i], i))
+          Map.setFightScene(new FightScene(Map.hero(), Map.enemies()[i], i))
           Map.fightScene().start()
         }
       }
@@ -61,34 +60,26 @@ var Interface = function (modifier) {
       for(doorIndex in doors) {
         door = doors[doorIndex]
         if (
-          Hero.x() <= (door.x + 32)
-          && door.x <= (Hero.x() + 32)
-          && Hero.y() <= (door.y + 32)
-          && door.y <= (Hero.y() + 32)
+          Map.hero().x <= (door.x + 32)
+          && door.x <= (Map.hero().x + 32)
+          && Map.hero().y <= (door.y + 32)
+          && door.y <= (Map.hero().y + 32)
         ) {
 
           if (door.side === "top") {
             Map.up()
-            Hero.setY(Map.canvas().height-65);
+            Map.hero().setY(Map.canvas().height-65);
           } else if(door.side == "bottom") {
             Map.down()
-            Hero.setY(33);
+            Map.hero().setY(33);
           } else if(door.side == "left") {
             Map.left()
-            Hero.setX(Map.canvas().height-65);
+            Map.hero().setX(Map.canvas().height-65);
           } else if(door.side == "right") {
             Map.right()
-            Hero.setX(33);
+            Map.hero().setX(33);
           }
         }
-      }
-    },
-    movePointer: function() {
-      if (38 in keysDown) { // Player holding up
-        Map.fightScene().pointerUp()
-      }
-      if (40 in keysDown) { // Player holding down
-        Map.fightScene().pointerDown()
       }
     }
   }

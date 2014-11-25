@@ -48,11 +48,12 @@ var Map = function () {
     ready = false,
     image = new Image(),
     canvas = document.createElement("canvas"),
-    ctx = canvas.getContext("2d"),
+    ctx = canvas.getContext("2d"),  
     currentTile = grid[gridIndexY][gridIndexX],
     enemies = [],
     fightScene,
     fight = false;
+    hero = new Hero();
 
   image.onload = function () {
     ready = true;
@@ -66,7 +67,10 @@ var Map = function () {
       ctx.drawImage(door.img, door.x , door.y)
     }
   }
-
+  function setCurrentTile() {
+    currentTile = grid[gridIndexY][gridIndexX]
+    createEnemies()
+  }
   function createEnemies() {
     enemies = []
     for(var i = 0; i < currentTile.num_enemies; i++){
@@ -83,6 +87,9 @@ var Map = function () {
 
   createEnemies()
   return {
+    hero: function() {
+      return hero
+    },
     enemies: function() {
       return enemies
     },
@@ -120,49 +127,36 @@ var Map = function () {
     },
     up: function() {
       gridIndexY++
-      currentTile = grid[gridIndexY][gridIndexX]
-      createEnemies()
+      setCurrentTile()
     },
     down: function() {
-      gridIndexY = gridIndexY - 1
-      currentTile = grid[gridIndexY][gridIndexX]
-      createEnemies()
+      gridIndexY--
+      setCurrentTile()
     },
     left: function() {
-      gridIndexX = gridIndexX - 1
-      currentTile = grid[gridIndexY][gridIndexX]
-      createEnemies()
+      gridIndexX--
+      setCurrentTile()
     },
     right: function() {
       gridIndexX++
-      currentTile = grid[gridIndexY][gridIndexX]
-      createEnemies()
+      setCurrentTile()
     },
     resetHero: function() {
-      Hero.setX(canvas.width / 2);
-      Hero.setY(canvas.width / 2);
+      hero.setX(canvas.width / 2);
+      hero.setY(canvas.width / 2);
     },
     render: function () {
-      if (fight === true) {
+      ctx.drawImage(currentTile.bg, 0, 0);
         
-      } else {
-          ctx.drawImage(currentTile.bg, 0, 0);
-          
-        for(doorIndex in currentTile.doors){
-          door = currentTile.doors[doorIndex]
-          ctx.drawImage(door.img, door.x , door.y)
-        }
+      for(var doorIndex = 0; doorIndex < currentTile.doors.length; doorIndex++){
+        door = currentTile.doors[doorIndex]
+        ctx.drawImage(door.img, door.x , door.y)
+      }
 
-        if (Hero.ready()) {
-          ctx.drawImage(Hero.image(), Hero.x(), Hero.y());
-        }
+      ctx.drawImage(hero.image, hero.x, hero.y);
 
-        for (i in enemies){
-          enemies[i].render()
-        }
-        // if (Enemy.ready()) {
-        //   ctx.drawImage(Enemy.image(), Enemy.x(), Enemy.y());
-        // }
+      for (var i = 0; i < enemies.length; i++){
+        enemies[i].render()
       }
     }
   };
