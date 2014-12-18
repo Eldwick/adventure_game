@@ -85,15 +85,16 @@ Option.prototype = {
     var currentSelection = this.selections[this.currentSelectionIndex];
 
     this.pointerY = this.orginalPointY
-    if(this.innerSelected && currentSelection.useLimit > 0){
-      currentSelection.useLimit--
-      this.action = this.createAction(currentSelection)
-      this.pointerX -= 180
-    } else {
-      this.pointerX += 180
-      this.pointerY = 355
+    if( currentSelection.useLimit > 0) {
+      if(this.innerSelected){
+        currentSelection.useLimit--
+        this.action = this.createAction(currentSelection)
+        this.pointerX -= 180
+      } else {
+        this.pointerX += 180
+        this.pointerY = 355
+      }
     }
-    
     this.innerSelected = !this.innerSelected
     this.currentSelectionIndex = 0
   },

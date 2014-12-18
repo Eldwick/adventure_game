@@ -40,20 +40,36 @@ function createImage(url){
 
 var Map = function () {
   var grid = [
-      [TileFactory("assets/background3.png", [{side:"right", position:3}], 3), TileFactory("assets/background.png", [{side:"left", position:3}, {side:"top", position:7}, {side:"right", position:8}], 1), TileFactory("assets/background3.png", [{side:"left", position:8}], 4)],
-      [0, TileFactory("assets/background2.png", [{side:"bottom", position:7}], 2), 0]
-    ],
-    gridIndexY = 0,
-    gridIndexX = 1,
-    ready = false,
-    image = new Image(),
-    canvas = document.createElement("canvas"),
-    ctx = canvas.getContext("2d"),  
-    currentTile = grid[gridIndexY][gridIndexX],
-    enemies = [],
-    fightScene,
-    fight = false;
-    hero = new Hero();
+        [
+          TileFactory("assets/background3.png", [{side:"right", position:3}], 3), 
+          TileFactory("assets/background.png", [{side:"left", position:3}, {side:"top", position:7}, {side:"right", position:8}], 1),
+          TileFactory("assets/background3.png", [{side:"left", position:8}], 4),
+          0,
+          0,
+          0,
+          TileFactory("assets/background3.png", [{side:"top", position:7}], 3)
+        ],
+        [
+          0,
+          TileFactory("assets/background2.png", [{side:"bottom", position:7}, {side:"right", position:4}], 2),
+          TileFactory("assets/background.png", [{side:"left", position:4}, {side:"right", position:3}], 2),
+          TileFactory("assets/background2.png", [{side:"left", position:8}, {side:"right", position:8}], 2),
+          TileFactory("assets/background2.png", [{side:"left", position:8}, {side:"right", position:8}], 2),
+          TileFactory("assets/background3.png", [{side:"left", position:8}, {side:"right", position:8}], 2),
+          TileFactory("assets/background2.png", [{side:"bottom", position:7},{side:"left", position:8}], 2)
+        ]
+      ],
+      gridIndexY = 0,
+      gridIndexX = 1,
+      ready = false,
+      image = new Image(),
+      canvas = document.createElement("canvas"),
+      ctx = canvas.getContext("2d"),  
+      currentTile = grid[gridIndexY][gridIndexX],
+      enemies = [],
+      fightScene,
+      fight = false,
+      hero = new Hero();
 
   image.onload = function () {
     ready = true;
